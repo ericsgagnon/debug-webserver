@@ -3,29 +3,98 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Shrine (MDC Web Example App)</title>
+  <title>Request Debugger</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" sizes="192x192" href="https://material.io/static/images/simple-lp/favicons/components-192x192.png">
+  <link rel="icon" sizes="192x192" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/image/1x_web/ic_wb_cloudy_white_48dp.png">
   <link rel="shortcut icon" href="https://material.io/static/images/simple-lp/favicons/components-72x72.png">
 
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/normalize/6.0.0/normalize.min.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  body {
+    background-color: #f8f8f8;
+    font-family: "Roboto";  
+  }
 
+  h1, h2 {
+    color: #202020;
+    background-color: #dddddd;
+    text-align: center;
+  }
+  p {color: #606060;}
+  table {
+    color: #606060;
+  }
+  th, td {
+    border-bottom: 1px solid #909090;
+  }
+</style>
 </head>
 <body>
+ 
+
   <section class="header">
-    <h1>Index</h1>
+    <h1>Request Debugger</h1>
   </section>
   <section>
-    Hello, 
-      {{if .Name}} 
-        {{.Name}} 
-      {{- else}} 
-        there 
-      {{- end}}!
+  <h2><strong>Request</strong></h2>
+    <table>
+      <tr><td>Method</td><td>{{.Method}}</td></tr>
+      <tr><td>URL</td><td>{{.URL}}</td></tr>
+      <tr><td>Proto</td><td>{{ .Proto }}</td></tr>
+      <tr><td>ProtoMajor</td><td>{{ .ProtoMajor }}</td></tr>
+      <tr><td>ProtoMinor</td><td>{{ .ProtoMinor }}</td></tr>
+      <tr><td>Body</td><td>{{ .Body }}</td></tr>
+      <tr><td>ContentLength</td><td>{{ .ContentLength }}</td></tr>
+      <tr><td>TransferEncoding</td><td>{{ .TransferEncoding }}</td></tr>
+      <tr><td>Close</td><td>{{ .Close }}</td></tr>
+      <tr><td>Host</td><td>{{ .Host }}</td></tr>
+      <tr><td>Form</td><td>{{ .Form }}</td></tr>
+      <tr><td>PostForm</td><td>{{ .PostForm }}</td></tr>
+      <tr><td>MultipartForm</td><td>{{ .MultipartForm }}</td></tr>
+      <tr><td>Trailer</td><td>{{ .Trailer }}</td></tr>
+      <tr><td>RemoteAddr</td><td>{{ .RemoteAddr }}</td></tr>
+      <tr><td>RequestURI</td><td>{{ .RequestURI }}</td></tr>
+      <tr><td>TLS</td><td>{{ .TLS }}</td></tr>
+      <tr><td>Cancel</td><td>{{ .Cancel }}</td></tr>
+      <tr><td>Response</td><td>{{ .Response }}</td></tr>
+    </table>
+  </section>
+  
+
+  <section>
+  <h2><strong>Headers</strong></h2>
+    <table>
+    {{ range $key, $value := .Header }}
+      {{ if (and (ne $key "Cookie") (ne $key "cookie") ) }}
+        <tr><td><strong>{{ $key }}</strong></td>
+        <td>
+        {{range $innerIndex, $innerValue := $value }}
+          {{ printf "%v " $innerValue }}
+        {{ end }}
+      {{ end }}
+      </tr>
+    {{ end }}
+    </table>
   </section>
 
+  <section>
+  <h2><strong>Cookies</strong></h2>
+    <table>
+    {{ range $key, $value := .Header }}
+      {{ if (or (eq $key "Cookie") (eq $key "cookie") ) }}
+        {{range $innerIndex, $innerValue := $value }}
+          <tr><td>{{ printf "%v " $innerValue }}</td></tr>
+        {{ end }}
+      {{ end }}
+      
+    {{ end }}
+    </table>
+  </section>
 
 </body>
 </html>
+
