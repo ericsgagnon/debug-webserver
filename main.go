@@ -1,6 +1,6 @@
 //go:generate rm assets.go
 //go:generate go run embed.go
-//go:generate go run main.go assets.go
+//ignore go:generate go run main.go assets.go
 
 package main
 
