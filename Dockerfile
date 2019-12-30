@@ -12,6 +12,6 @@ RUN go mod download
 RUN go generate
 RUN go build
 
-EXPOSE 18080
+EXPOSE 80
 
 ENTRYPOINT [ "./debug-webserver" ]

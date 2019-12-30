@@ -5,29 +5,53 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/urfave/cli/v2"
 )
 
 var err error
 
 type server struct {
-	r      *mux.Router
-	Assets http.FileSystem
+	r       *mux.Router
+	Assets  http.FileSystem
+	Address string
 }
 
 func main() {
-
 	s := server{}
-	s.Assets = assets
-	s.r = mux.NewRouter()
-	s.routes()
 
-	log.Fatal(http.ListenAndServe(":18080", s.r))
+	app := &cli.App{
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:        "address",
+				Value:       ":80",
+				Destination: &s.Address,
+				Usage:       "string representing the address:port to listen on",
+			},
+		},
+		Name:  "debug-webserver",
+		Usage: "runs a webserver that listens on [address] and displays http request details",
+		Action: func(c *cli.Context) error {
+			fmt.Println("Welcome to the Thunderdome, no logging will be provided.")
+			s.Assets = assets
+			s.r = mux.NewRouter()
+			s.routes()
+			log.Fatal(http.ListenAndServe(s.Address, s.r))
+			return nil
+		},
+	}
+
+	err = app.Run(os.Args)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (s *server) routes() {
